@@ -9,7 +9,6 @@ import com.witherview.database.repository.QuestionListRepository;
 import com.witherview.database.repository.SelfCheckRepository;
 import com.witherview.database.repository.SelfHistoryRepository;
 import com.witherview.database.repository.UserRepository;
-import com.witherview.selfPractice.exception.NotFoundUser;
 import com.witherview.support.MockMvcSupporter;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +19,7 @@ import javax.transaction.Transactional;
 
 @Transactional
 public class SelfPracticeSupporter extends MockMvcSupporter {
-    Long userId = (long)1;
+    String userId = "1";
     final String email = "hohoho@witherview.com";
     final String password = "123456";
     final String name = "witherview";
@@ -70,12 +69,11 @@ public class SelfPracticeSupporter extends MockMvcSupporter {
         userId = user.getId();
 
         // 세션생성
-        AccountSession accountSession = new AccountSession(userId, email, name);
+        AccountSession accountSession = new AccountSession(Long.parseLong(userId), email, name);
         mockHttpSession.setAttribute("user", accountSession);
 
         // 리스트생성
-        QuestionList questionList = new QuestionList("title", "enterprise", "job");
-        user.addQuestionList(questionList);
+        QuestionList questionList = new QuestionList(user, "title", "enterprise", "job");
         listId = questionListRepository.save(questionList).getId();
 
         SelfHistory selfHistory = new SelfHistory(questionList);
